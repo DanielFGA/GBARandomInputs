@@ -1,6 +1,6 @@
-# GBA Games Page:
+# GBA Games Page (random inputs):
 
-https://playnintendo.github.io/gba
+DanielFGA.github.io
 
 # GBA Emulator Core Used:
 
