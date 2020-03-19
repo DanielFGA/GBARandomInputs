@@ -10,71 +10,49 @@
  */
 var keyZones = [
     //Use this to control the key mapping:
-                //A:
-                [88, 74],
-                //B:
-                [90, 81, 89],
-                //Select:
-                [16],
-                //Start:
-                [13],
-                //Right:
-                [39],
-                //Left:
-                [37],
-                //Up:
-                [38],
-                //Down:
-                [40],
-                //R:
-                [50],
-                //L:
-                [49]
+    //A:
+    [88, 74],
+    //B:
+    [90, 81, 89],
+    //Select:
+    [16],
+    //Start:
+    [13],
+    //Right:
+    [39],
+    //Left:
+    [37],
+    //Up:
+    [38],
+    //Down:
+    [40],
+    //R:
+    [50],
+    //L:
+    [49]
 ];
-function keyDown(e) {
-    var keyCode = e.keyCode | 0;
-    for (var keyMapIndex = 0; (keyMapIndex | 0) < 10; keyMapIndex = ((keyMapIndex | 0) + 1) | 0) {
-        var keysMapped = keyZones[keyMapIndex | 0];
-        var keysTotal = keysMapped.length | 0;
-        for (var matchingIndex = 0; (matchingIndex | 0) < (keysTotal | 0); matchingIndex = ((matchingIndex | 0) + 1) | 0) {
-            if ((keysMapped[matchingIndex | 0] | 0) == (keyCode | 0)) {
-                Iodine.keyDown(keyMapIndex | 0);
-                if (e.preventDefault) {
-                    e.preventDefault();
-                }
-            }
-        }
+
+
+function randomKeyPress() {
+    var random_index = Math.floor(Math.random() * Math.floor(keyZones.length));
+    Iodine.keyDown(random_index);
+    setTimeout(() => {Iodine.keyUp(random_index)}, 100);
+    writeRedTemporaryText("Input: " + getKey(random_index));
+}
+
+function getKey(index) {
+    switch (index) {
+        case 0: return "A";
+        case 1: return "B";
+        case 2: return "SELECT";
+        case 3: return "START";
+        case 4: return "RIGHT";
+        case 5: return "LEFT";
+        case 6: return "UP";
+        case 7: return "DOWN";
+        case 8: return "R";
+        case 9: return "L";
+        default: return "ERROR";
     }
 }
-function keyUp(keyCode) {
-    keyCode = keyCode | 0;
-    for (var keyMapIndex = 0; (keyMapIndex | 0) < 10; keyMapIndex = ((keyMapIndex | 0) + 1) | 0) {
-        var keysMapped = keyZones[keyMapIndex | 0];
-        var keysTotal = keysMapped.length | 0;
-        for (var matchingIndex = 0; (matchingIndex | 0) < (keysTotal | 0); matchingIndex = ((matchingIndex | 0) + 1) | 0) {
-            if ((keysMapped[matchingIndex | 0] | 0) == (keyCode | 0)) {
-                Iodine.keyUp(keyMapIndex | 0);
-            }
-        }
-    }
-}
-function keyUpPreprocess(e) {
-    var keyCode = e.keyCode | 0;
-    switch (keyCode | 0) {
-        case 68:
-            lowerVolume();
-            break;
-        case 82:
-            raiseVolume();
-            break;
-        case 51:
-            Iodine.incrementSpeed(0.10);
-            break;
-        case 52:
-            Iodine.incrementSpeed(-0.10);
-            break;
-        default:
-            //Control keys / other
-            keyUp(keyCode);
-    }
-}
+

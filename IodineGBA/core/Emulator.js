@@ -16,7 +16,7 @@ function GameBoyAdvanceEmulator() {
         "audioBufferDynamicLimit":2,        //Audio buffer dynamic minimum span amount over x interpreter iterations.
         "audioBufferSize":20,               //Audio buffer maximum span amount over x interpreter iterations.
         "timerIntervalRate":16,             //How often the emulator core is called into (in milliseconds).
-        "emulatorSpeed":1,                  //Speed multiplier of the emulator.
+        "emulatorSpeed":2,                  //Speed multiplier of the emulator.
         "metricCollectionMinimum":30,       //How many cycles to collect before determining speed.
         "dynamicSpeed":true                 //Whether to actively change the target speed for best user experience.
     }
@@ -43,6 +43,7 @@ function GameBoyAdvanceEmulator() {
     this.metricStart = null;                  //Date object reference.
     this.dynamicSpeedCounter = 0;             //Rate limiter counter for dynamic speed.
     this.audioNumSamplesTotal = 0;            //Buffer size.
+    this.randomIntervall = 0;
     this.calculateTimings();                  //Calculate some multipliers against the core emulator timer.
     this.generateCoreExposed();               //Generate a limit API for the core to call this shell object.
 }
@@ -67,6 +68,7 @@ GameBoyAdvanceEmulator.prototype.play = function () {
             this.loaded = true;
             this.importSave();
         }
+        this.randomIntervall = setInterval(function (){randomKeyPress()}, 300);
     }
 }
 GameBoyAdvanceEmulator.prototype.pause = function () {
@@ -74,6 +76,7 @@ GameBoyAdvanceEmulator.prototype.pause = function () {
         this.clearTimer();
         this.exportSave();
         this.paused = true;
+        clearInterval(this.randomIntervall)
     }
 }
 GameBoyAdvanceEmulator.prototype.stop = function () {
@@ -293,8 +296,8 @@ GameBoyAdvanceEmulator.prototype.enableAudio = function () {
         //Attempt to enable audio:
         var parentObj = this;
         this.audio.initialize(2, this.clocksPerSecond / this.audioResamplerFirstPassFactor, Math.max((this.CPUCyclesPerIteration | 0) * this.settings.audioBufferSize / this.audioResamplerFirstPassFactor, 8192) << 1, this.settings.audioVolume, function () {
-                                     //Disable audio in the callback here:
-                                     parentObj.disableAudio();
+            //Disable audio in the callback here:
+            parentObj.disableAudio();
         });
         this.audio.register();
         if (this.audioFound) {
